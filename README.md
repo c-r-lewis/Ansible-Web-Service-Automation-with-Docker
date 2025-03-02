@@ -1,5 +1,5 @@
 
-# Project: Use Ansible to Install Web Services from Server (Local Host) to Client (Docker Container for Testing)
+# Ansible automation to install Web Services 
 
 This project demonstrates how to use **Ansible** to install and configure web services (such as **Nginx** and **PHP**) on a **Docker container** from a local host. The primary goal of this project is to automate the setup of a development environment using **Docker** and **Ansible**, making it easy to test Ansible playbooks without needing access to remote servers or multiple physical machines.
 
