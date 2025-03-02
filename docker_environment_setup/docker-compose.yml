@@ -1,0 +1,12 @@
+services:
+  app:
+    image: alpine:3.14
+    container_name: test_environment
+    ports:
+      - "2222:22"  
+      - "8080:80"  
+    entrypoint: /entrypoint.sh
+    volumes:
+      - ./sshd_config:/etc/ssh/sshd_config
+      - ./authorized_keys:/root/.ssh/authorized_keys
+      - ./entrypoint.sh:/entrypoint.sh

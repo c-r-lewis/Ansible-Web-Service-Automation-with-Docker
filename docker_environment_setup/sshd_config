@@ -1,0 +1,6 @@
+Port 22
+PermitRootLogin yes
+PasswordAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile /root/.ssh/authorized_keys
+Subsystem sftp /usr/lib/ssh/sftp-server

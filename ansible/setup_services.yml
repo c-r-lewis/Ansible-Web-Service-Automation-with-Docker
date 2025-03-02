@@ -1,0 +1,53 @@
+- name: Install and Configure Web Services
+  hosts: docker
+  become: yes
+  tasks:
+    - name: Update apk cache
+      apk:
+        update_cache: yes
+
+    - name: Install required packages
+      apk:
+        name:
+          - nginx
+          - php83
+          - php83-fpm
+          - php83-mysqli
+          - php83-session
+          - php83-json
+          - openrc
+        state: present
+
+    - name: Enable OpenRC services
+      command: openrc
+      args:
+        creates: /run/openrc/softlevel
+
+    - name: Start OpenRC
+      command: touch /run/openrc/softlevel
+
+    - name: Add PHP-FPM83 to OpenRC
+      command: rc-update add php-fpm83 default
+
+    - name: Start PHP-FPM83
+      command: rc-service php-fpm83 start
+
+    - name: Copy nginx config file
+      copy: 
+        src: ../config/test_environment.conf
+        dest: /etc/nginx/http.d/default.conf
+
+    - name: Ensure Nginx is running
+      command: rc-service nginx restart
+
+    - name: Copy website files
+      copy:
+        src: ../web/index.php
+        dest: /var/www/localhost/htdocs/index.php
+
+  handlers:
+    - name: Restart Nginx
+      command: rc-service nginx restart
+
+    - name: Restart PHP-FPM83
+      command: rc-service php-fpm83 restart
