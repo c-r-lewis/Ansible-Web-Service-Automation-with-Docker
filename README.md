@@ -1,7 +1,7 @@
 
 # Ansible automation to install Web Services 
 
-This project demonstrates how to use **Ansible** to install and configure web services (such as **Nginx** and **PHP**) on a **Docker container** from a local host. The primary goal of this project is to automate the setup of a development environment using **Docker** and **Ansible**, making it easy to test Ansible playbooks without needing access to remote servers or multiple physical machines.
+This project demonstrates using **Ansible** to install and configure web services (such as **Nginx** and **PHP**) on a **Docker container** from a local host. The primary goal of this project is to automate the setup of a development environment using **Docker** and **Ansible**, making it easy to test Ansible playbooks without needing access to remote servers or multiple physical machines.
 
 ## Project Architecture
 
@@ -25,11 +25,11 @@ This project demonstrates how to use **Ansible** to install and configure web se
 
 ## 1. **Configure Docker Environment**
 
-The first step is to configure the Docker container to allow Ansible to communicate with it via SSH. This section covers setting up SSH and installing required services.
+The first step is configuring the Docker container to allow Ansible to communicate via SSH. This section covers setting up SSH and installing required services.
 
 ### **Generate SSH Key**
 
-To securely connect to the Docker container from the host machine, an SSH key pair must be generated. Run the following command to generate the key pair:
+An SSH key pair must be generated to connect securely to the Docker container from the host machine. Run the following command to generate the key pair:
 
 ```bash
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
@@ -56,7 +56,7 @@ sudo chown root:root authorized_keys
 sudo chmod 600 authorized_keys
 ```
 
-This will ensure that the file is owned by the root user and only readable by the owner.
+This will ensure that the root user owns the file and that the file is only readable by the owner.
 
 ### **Configure SSH Daemon (`sshd_config`)**
 
@@ -73,17 +73,17 @@ Subsystem sftp /usr/lib/ssh/sftp-server
 
 This configuration ensures:
 - **Port 22**: SSH is accessible on port 22.
-- **PermitRootLogin**: The root user can log in, but with public key authentication only (no password login).
+- **PermitRootLogin**: The root user can log in with public key authentication only (no password login).
 - **PubkeyAuthentication**: Only public key authentication is allowed.
 
 
 ## 2. **Docker Compose Setup**
 
-Next, set up the Docker environment using Docker Compose. The `docker-compose.yml` file defines the services, such as the web server (Nginx) and SSH access, required to run the container.
+Next, set up the Docker environment using Docker Compose. The `docker-compose.yml` file defines the services required to run the container, such as the web server (Nginx) and SSH access.
 
 ### **docker-compose.yml**
 
-The `docker-compose.yml` file defines a single service, `app`, which is a Docker container based on the `alpine:3.14` image.
+The `docker-compose.yml` file defines a single service, `app`, a Docker container based on the `alpine:3.14` image.
 
 ```yaml
 services:
@@ -147,7 +147,7 @@ test_environment ansible_host=127.0.0.1 ansible_port=2222 ansible_user=root
 
 **Explanation**:
 - **`ansible_host`**: Specifies the host (IP address or domain name) to connect to.
-- **`ansible_port`**: Specifies the SSH port (2222 in this case).
+- **`ansible_port`**: Specifies the SSH port (2222).
 - **`ansible_user`**: Specifies the user to log in as (root user).
 
 ### **Ansible Playbook (`setup_services.yml`)**
@@ -212,16 +212,14 @@ This playbook installs and configures web services (Nginx, PHP) on the Docker co
 
 **Explanation**:
 - **`apk` module**: Used to install packages (e.g., `nginx`, `php83`, `openrc`).
-- **`copy` module**: Used to copy configuration files and website files into the container.
+- **`copy` module**: Copy configuration files and website files into the container.
 - **`rc-service` and `rc-update` commands**: Used to manage services like Nginx and PHP-FPM.
 
 ## 4. **Testing and Adapting for Non-Virtual Clients**
 
 ### **Testing with Docker Containers**
 
-In this project, I used **Docker containers** as a testing environment because it allows for easy testing of Ansible playbooks on a single machine (localhost) without the need for multiple physical machines or remote servers. Docker containers simulate the environment of a remote host and lets you test out the installation of services (like Nginx, PHP, etc.) directly inside the container, making it ideal for local development and testing.
-
-You can run this entire setup on your local machine using Docker, which allows you to simulate a remote client without actually needing access to another physical machine. This makes it much easier and faster to experiment with Ansible playbooks.
+In this project, I used **Docker containers** as a testing environment because it allows for easy testing of Ansible playbooks on a single machine (localhost) without needing multiple physical machines or remote servers. 
 
 ### **Adapting for Non-Virtual (Physical) Machines**
 
@@ -236,7 +234,7 @@ If you want to adapt the project to install services on an actual physical machi
    test_environment ansible_host=192.168.1.100 ansible_user=root
    ```
 
-The tag [docker] corresponds to the group name. In Ansible, the group name is used to categorize and organize hosts in your inventory file. It allows you to target a specific set of hosts (or containers, VMs, physical machines, etc.) when running a playbook. You can define multiple groups in your inventory file, and each group can contain one or more hosts. In this example I've updated the group name to [physical_machines] for clarity. If you change the group name, you'll also need to update the hosts in the playbook to the updated group name.
+The tag [docker] corresponds to the group name. In Ansible, the group name is used to categorize and organize hosts in your inventory file. It allows you to target a specific set of hosts (or containers, VMs, physical machines, etc.) when running a playbook. You can define multiple groups in your inventory file, each containing one or more hosts. I've updated the group name to [physical_machines] for clarity in this example. If you change the group name, you'll also need to update the hosts in the playbook to the updated group name.
 
 2. **Ensure SSH Access**:
    - Ensure SSH is enabled on the physical machine.
